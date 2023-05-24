@@ -20,3 +20,90 @@ Spirit - like systemd but more useful features available.
 15. spirit_ipc lib
 16. ipc: shaman opens "role" mq for sendind and creates "role_other" for reading answers.
 17. Consider use OneTimeIPC, EveryAnsOpenIPC, ContiniousIPC
+
+spirit.d - SPIRIT_MAIN - run by systemd
+
+/etc/spirit.d - rules for start spirits
+rule file contains:
+1. roles. for every role - some description, available cmds.
+2. start,stop,restart rules
+3. pidfile
+
+generate role file in /var/spirit/role1
+
+Shaman:
+dynamic shaman - abstract class
+spiritd helps other spirits to create shamans (Spirit note).
+Shaman_t d_shaman = create_shaman(ROLE_ID);
+d_shaman.send(REQ_ID, data);
+d_shaman.recv() -> switch (ANS_ID): do smth;
+communication way depends of: type(ipc, ioctl...), special name(/dev/setdevm, ipc_name, rpmsg_name) - this name - in special file.
+Shaman can wait the spirit for start
+Shaman methods: send_spirit_msg(TITLE, data, size), 
+recv callback(switch title, func(title, data* , size) of func(spmsg)) - for answers.
+handle answers ACCEPTED, DENIED
+get state
+Shaman start(setup), shaman stop(destroy)
+
+spirit_logger -> /var/log/role.log <- all events
+
+spirit_lib
+Install functions
+1. create dir /etc/spirit.d, subdirs
+
+
+Runtime functions
+1. create /var/spirit folder
+2. for every role in spirit.d -> create /var/spirit/roleX file content:
+	roleID, special name, comm_type, msg_hex_word
+3. parse state, role file
+4. create dir /var/spirit/state content: file like 01role1, content: 01 role1 state comm_type 0xff\n\r
+5. cycle dir reading
+6. parse by token
+7. check spirits
+8. spirit role file -> spirit_note -> list of notes -> create spirit_state
+
+Spirit init file example. Parser uses token = and strcmp str0, read str1 or JSON?
+roleID=
+special_name=
+comm_type=
+start rule=? or use "special_name start"
+timeout= or use default value 1 sec
+
+Spiritlib contains
+1. Spirit master daemon
+2. Spirit systemd rule
+
+3. Spirit template
+	- communication tool like IPC, ioctl, etc depends on core
+	- spirit msg construct/parse rule, functions
+	- spirit special msg handling
+
+SpiritMaster can:
+1. Look through spirit.d lib and run the spirits
+2. Check if spirit is alive and restart it, update spirit state
+	If spirit doesn't answer, execute special_name check - if result is negative - restart
+3. CMD Request_spirit_note(role)
+4. create dir /var/spirit/state content: file like 01role1, content: 01 role1 state comm_type 0xff\n\r
+
+SpiritState:
+1. State code: stopped, running, broken - bits
+	- Is running
+	- Is broken
+	- Need restart
+	- other special bits
+2. Available messages (option - short and long msg - depends of spirit msg data size)
+
+To install spirit you need:
+1. Create spirit driver/daemon/firmware and install it in system as you want
+2. Create app in /usr/bin with name=special_name and command line interface start/stop/restart/check
+3. Create SpiritNote in /etc/spirit.d folder
+
+Special words start stop, etc - where?
+
+Issues:
+1. IOCTL - transfer spirit message with void* data, copy_from_user(spirit_msg.data)
+2. RPMSG - double read
+
+
+Enable/Disamble spirits - use symlinks like systemd?
