@@ -36,7 +36,8 @@ typedef enum
 {
 	SPIRIT_FMT_ANS_CUSTOM = 0,
 	SPIRIT_FMT_ANS_ACCEPTED = 1,
-	SPIRIT_FMT_ANS_DENIED = 2
+	SPIRIT_FMT_ANS_DENIED = 2,
+	SPIRIT_FMT_ANS_STATE = 3
 } SPIRIT_FMT_ANS_TYPE;
 typedef enum
 {
@@ -45,7 +46,16 @@ typedef enum
 	SPIRIT_FMT_REQ_SHUTDOWN = 2
 } SPIRIT_FMT_REQ_TYPE;
 
-#define SPIRIT_FMT_WAY_MASK 0xF0
+/**
+ * ASK bit. 
+ * If DIR = SPIRIT_FMT_ANS and ASK bit = 1, Spirit1 wants other spirit2 to ask him. 
+ * Spirit2 should send empty request with ASK bit. 
+ * Spirit1 answers by desired request.
+ * REQ -> ANS+ASK -> EREQ+ASK -> REQ -> ANS.
+ */
+#define SPIRIT_FMT_ASK_MASK 0x10
+
+#define SPIRIT_FMT_WAY_MASK 0xE0
 typedef enum
 {
 	SPIRIT_FMT_WAY_IPC = 0, // Inter process

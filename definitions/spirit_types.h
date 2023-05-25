@@ -24,13 +24,6 @@ typedef struct spirit_note
     unsigned char[SPIRIT_SPECIAL_NAME_MAX_LENGTH] name;
 } __attribute__((packed, aligned(1))) SpiritNote;
 
-static const char SPIRIT_START_WORD[] = "start";
-static const char SPIRIT_STOP_WORD[] = "stop";
-static const char SPIRIT_RESTART_WORD[] = "restart";
-static const char SPIRIT_CHECK_WORD[] = "check";
-
-static const char SPIRIT_MASTER_NAME[] = "spiritd";
-
 #if defined __cplusplus
 }
 #endif 
