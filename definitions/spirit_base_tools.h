@@ -34,6 +34,9 @@ SpiritMsg spirit_msg_make_ans_state(unsigned char sender, unsigned char receiver
 const char * spirit_role2str(unsigned char roleid);
 const char * spirit_state2str(SpiritState * state);
 
+// Master
+SpiritNote get_spirit_master_note();
+
 #if defined __cplusplus
 }
 #endif 
