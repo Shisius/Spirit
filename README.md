@@ -21,7 +21,7 @@ Spirit - like systemd but more useful features available.
 16. ipc: shaman opens "role" mq for sendind and creates "role_other" for reading answers.
 17. Consider use OneTimeIPC, EveryAnsOpenIPC, ContiniousIPC
 
-spirit.d - SPIRIT_MAIN - run by systemd
+# Done & remember
 
 /etc/spirit.d - rules for start spirits
 rule file contains:
@@ -30,6 +30,8 @@ rule file contains:
 3. pidfile
 
 generate role file in /var/spirit/role1
+
+# TO DO
 
 Shaman:
 dynamic shaman - abstract class
@@ -51,25 +53,6 @@ spirit_lib
 Install functions
 1. create dir /etc/spirit.d, subdirs
 
-
-Runtime functions
-1. create /var/spirit folder
-2. for every role in spirit.d -> create /var/spirit/roleX file content:
-	roleID, special name, comm_type, msg_hex_word
-3. parse state, role file
-4. create dir /var/spirit/state content: file like 01role1, content: 01 role1 state comm_type 0xff\n\r
-5. cycle dir reading
-6. parse by token
-7. check spirits
-8. spirit role file -> spirit_note -> list of notes -> create spirit_state
-
-Spirit init file example. Parser uses token = and strcmp str0, read str1 or JSON?
-roleID=
-special_name=
-comm_type=
-start rule=? or use "special_name start"
-timeout= or use default value 1 sec
-
 Spiritlib contains
 1. Spirit master daemon
 2. Spirit systemd rule
@@ -87,23 +70,26 @@ SpiritMaster can:
 4. create dir /var/spirit/state content: file like 01role1, content: 01 role1 state comm_type 0xff\n\r
 
 SpiritState:
-1. State code: stopped, running, broken - bits
-	- Is running
-	- Is broken
-	- Need restart
-	- other special bits
-2. Available messages (option - short and long msg - depends of spirit msg data size)
+1. Available messages (option - short and long msg - depends of spirit msg data size)
+
+# Issues:
+1. IOCTL - transfer spirit message with void* data, copy_from_user(spirit_msg.data)
+2. RPMSG - double read
+
+# Questions
+
+Enable/Disamble spirits - use symlinks like systemd?
+
+# Future readme
 
 To install spirit you need:
 1. Create spirit driver/daemon/firmware and install it in system as you want
 2. Create app in /usr/bin with name=special_name and command line interface start/stop/restart/check
 3. Create SpiritNote in /etc/spirit.d folder
 
-Special words start stop, etc - where?
+# Hmmm
 
-Issues:
-1. IOCTL - transfer spirit message with void* data, copy_from_user(spirit_msg.data)
-2. RPMSG - double read
-
-
-Enable/Disamble spirits - use symlinks like systemd?
+Runtime functions
+2. for every role in spirit.d -> create /var/spirit/roleX file content:
+	roleID, special name, comm_type, msg_hex_word
+4. create dir /var/spirit/state content: file like 01role1, content: 01 role1 state comm_type 0xff\n\r
