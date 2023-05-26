@@ -33,6 +33,18 @@ generate role file in /var/spirit/role1
 
 # TO DO
 
+Daemon:
+daemonlib: doublefork, check running, redirect std
+Main - maybe template function?:
+	parse arg:
+		Start:
+			Create Spirit, setup, run, create sigint handler
+		Stop:
+			Send sigint 
+		Check:
+			Check if running
+		Restart:
+
 Shaman:
 dynamic shaman - abstract class
 spiritd helps other spirits to create shamans (Spirit note).
