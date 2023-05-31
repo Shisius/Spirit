@@ -3,8 +3,9 @@
 
 #include "spirit_master_tools.h"
 #include "spirit_master_defs.h"
+#include "daemon_origin.h"
 
-class SpiritMaster
+class SpiritMaster : public SpiritBase
 {
 
 protected:

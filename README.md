@@ -36,7 +36,7 @@ generate role file in /var/spirit/role1
 Daemon:
 daemonlib: doublefork, check running, redirect std
 Main - maybe template function?:
-	parse arg:
+	parse arg - maybe map<string, function>, d_cmd_map, add_cmd():
 		Start:
 			Create Spirit, setup, run, create sigint handler
 		Stop:
@@ -44,6 +44,31 @@ Main - maybe template function?:
 		Check:
 			Check if running
 		Restart:
+
+int main(int argc, char ** argv)
+{
+	Daemon<MySpirit> d(args); // d = make_unique<MySpirit>(args);
+	return Daemon.run(argc, argv);
+}
+
+SpiritBase:
+int setup()
+
+Log:
+cout logger. Part of Spirit_Base. If you want use it - create in setup and use print_sp()? but how?
+Check if printf is threadsafe.
+```
+printf(const char *fmt, ...)
+{
+	va_list	listp;
+
+	disable_preemption();
+	va_start(listp, fmt);
+	_doprnt(fmt, &listp, conslog_putc, 16);
+	va_end(listp);
+	enable_preemption();
+}
+```
 
 Shaman:
 dynamic shaman - abstract class
@@ -58,8 +83,6 @@ recv callback(switch title, func(title, data* , size) of func(spmsg)) - for answ
 handle answers ACCEPTED, DENIED
 get state
 Shaman start(setup), shaman stop(destroy)
-
-spirit_logger -> /var/log/role.log <- all events
 
 spirit_lib
 Install functions
