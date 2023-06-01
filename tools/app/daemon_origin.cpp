@@ -55,7 +55,22 @@ int DaemonOrigin::run(int argc, char ** argv)
 
 int DaemonOrigin::start(const std::string & args)
 {
-	// Run daemon here
+	int result;
+	// Create spirit pointer???? If double start???
 	d_spirit = std::make_unique<SpiritT>(args);
+	d_note = d_spirit->get_note();
+	// Fork here
+
+	// Run daemon here
+	
+	result = d_spirit->setup();
+	if (result != 0) {
+		printf("Spirit %s setup failed with code %d!\n", d_note.name, result);
+		return -1;
+	}
+
+
+	// Exit
+	spirit::del_pid_file(d_note.name);
 	return 0;
 }

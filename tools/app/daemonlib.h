@@ -22,6 +22,8 @@ namespace spirit {
 
 	int del_pid_file(const char * sp_name);
 
+	int kill_by_pid(pid_t pid, int sig_no);
+
 	int doublefork();
 
 	StdIoeFd redirect_std(const char * name);

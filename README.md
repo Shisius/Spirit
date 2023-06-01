@@ -33,8 +33,9 @@ generate role file in /var/spirit/role1
 
 # TO DO
 
-Daemon:
+DaemonOrigin:
 daemonlib: doublefork, check running, redirect std
+???? What is the name in this funcs?
 Main - maybe template function?:
 	parse arg - maybe map<string, function>, d_cmd_map, add_cmd():
 		Start:
@@ -50,9 +51,10 @@ int main(int argc, char ** argv)
 	Daemon<MySpirit> d(args); // d = make_unique<MySpirit>(args);
 	return Daemon.run(argc, argv);
 }
+????????????? How to get note without spirit construction? Static function maybe?
+
 
 SpiritBase:
-int setup()
 
 Log:
 cout logger. Part of Spirit_Base. If you want use it - create in setup and use print_sp()? but how?

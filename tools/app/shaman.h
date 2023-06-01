@@ -25,6 +25,8 @@ public:
 	Shaman(const SpiritNote & note) : d_note(note) {}
 	~Shaman();
 
+	int req(unsigned char title, void * data);
+
 };
 
 #endif //_SHAMAN_H_
