@@ -4,7 +4,6 @@
 #include "spirit_base.h"
 #include "daemoblib.h"
 
-template<class SpiritT>
 class DaemonOrigin
 {
 protected:
@@ -21,7 +20,7 @@ protected:
 
 public:
 
-	DaemonOrigin();
+	DaemonOrigin(std::unique_ptr<SpiritBase> spirit_ptr);
 	~DaemonOrigin();
 
 	int run(int argc, char ** argv);

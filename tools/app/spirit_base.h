@@ -12,10 +12,10 @@ protected:
 
 public:
 
-	SpiritBase(const std::string & args);
+	SpiritBase();
 	~SpiritBase();
 
-	virtual int setup();
+	virtual int setup(const std::string & args);
 
 	virtual SpiritNote get_note();
 

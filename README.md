@@ -35,7 +35,7 @@ generate role file in /var/spirit/role1
 
 DaemonOrigin:
 daemonlib: doublefork, check running, redirect std
-???? What is the name in this funcs?
+???? Stdfs - maybe one file and no stdin?
 Main - maybe template function?:
 	parse arg - maybe map<string, function>, d_cmd_map, add_cmd():
 		Start:
@@ -51,8 +51,7 @@ int main(int argc, char ** argv)
 	Daemon<MySpirit> d(args); // d = make_unique<MySpirit>(args);
 	return Daemon.run(argc, argv);
 }
-????????????? How to get note without spirit construction? Static function maybe?
-
+??Two types of spirit construction in daemonorigin
 
 SpiritBase:
 
@@ -75,8 +74,6 @@ printf(const char *fmt, ...)
 Shaman:
 dynamic shaman - abstract class
 spiritd helps other spirits to create shamans (Spirit note).
-Shaman_t d_shaman = create_shaman(ROLE_ID);
-d_shaman.send(REQ_ID, data);
 d_shaman.recv() -> switch (ANS_ID): do smth;
 communication way depends of: type(ipc, ioctl...), special name(/dev/setdevm, ipc_name, rpmsg_name) - this name - in special file.
 Shaman can wait the spirit for start
@@ -85,6 +82,10 @@ recv callback(switch title, func(title, data* , size) of func(spmsg)) - for answ
 handle answers ACCEPTED, DENIED
 get state
 Shaman start(setup), shaman stop(destroy)
+Shaman contains MqReceivers and other stuff.
+Only req and read the answers.
+Req -> Wait for Accepted? How long? 
+Example: create_ins_shaman(INS_IPC_Shaman: IPCShaman, INSShaman)
 
 spirit_lib
 Install functions

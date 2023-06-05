@@ -16,17 +16,17 @@ namespace spirit {
 	static const std::string PID_FILE_PATH = "/var/run/spirit/"
 	static const std::string LOG_FILE_PATH = "/var/log/spirit/"
 
-	int write_pid_file(const char * sp_name);
+	int write_pid_file(const char * full_path);
 
-	pid_t read_pid_file(const char * sp_name);
+	pid_t read_pid_file(const char * full_path);
 
-	int del_pid_file(const char * sp_name);
+	int del_pid_file(const char * full_path);
 
 	int kill_by_pid(pid_t pid, int sig_no);
 
 	int doublefork();
 
-	StdIoeFd redirect_std(const char * name);
+	StdIoeFd redirect_std(const char * full_path);
 
 } // spirit
 
