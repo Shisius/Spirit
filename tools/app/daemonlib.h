@@ -13,8 +13,8 @@ typedef struct std_ioe_fd
 
 namespace spirit {
 
-	static const std::string PID_FILE_PATH = "/var/run/spirit/"
-	static const std::string LOG_FILE_PATH = "/var/log/spirit/"
+	static const std::string PID_FILE_PATH = "/var/run/spirit/";
+	static const std::string LOG_FILE_PATH = "/var/log/spirit/";
 
 	int write_pid_file(const char * full_path);
 

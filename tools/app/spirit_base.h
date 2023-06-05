@@ -16,6 +16,7 @@ public:
 	~SpiritBase();
 
 	virtual int setup(const std::string & args);
+	virtual void destroy();
 
 	virtual SpiritNote get_note();
 

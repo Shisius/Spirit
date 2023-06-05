@@ -33,6 +33,8 @@ generate role file in /var/spirit/role1
 
 # TO DO
 
+SIZE 2 LENGTH?!
+
 DaemonOrigin:
 daemonlib: doublefork, check running, redirect std
 ???? Stdfs - maybe one file and no stdin?
@@ -52,6 +54,7 @@ int main(int argc, char ** argv)
 	return Daemon.run(argc, argv);
 }
 ??Two types of spirit construction in daemonorigin
+?? Alive check period??
 
 SpiritBase:
 
@@ -85,6 +88,7 @@ Shaman start(setup), shaman stop(destroy)
 Shaman contains MqReceivers and other stuff.
 Only req and read the answers.
 Req -> Wait for Accepted? How long? 
+Blocking request - depends on spirit type (for ioctl for example)
 Example: create_ins_shaman(INS_IPC_Shaman: IPCShaman, INSShaman)
 
 spirit_lib

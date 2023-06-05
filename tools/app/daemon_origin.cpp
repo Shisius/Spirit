@@ -40,7 +40,10 @@ int DaemonOrigin::setup()
 
 void DaemonOrigin::sigint(int sigval)
 {
+	lock_guard<mutex> lg(d_alive_mutex);
+	printf("SIGINT %d. Spirit %s will be destroyed\n", sigval, d_note.name);
 	// destroy spirit here
+	d_spirit->destroy();
 }
 
 void DaemonOrigin::help()
@@ -73,17 +76,32 @@ int DaemonOrigin::start(const std::string & args)
 {
 	int result;
 
+	// Check if running
+
 	// Fork here
+	result = spirit::doublefork();
+	if (result != 0) {
+		printf("Doublefork failed on step %d (fork|chdir|setsid|fork)\n", -1*result);
+	}
+	// Create log file
 
 	// Run daemon here
-	
 	result = d_spirit->setup(args);
 	if (result != 0) {
 		printf("Spirit %s setup failed with code %d!\n", d_note.name, result);
 		return -1;
 	}
-
-
+	// Alive cycle
+	while (true) {
+		{
+			lock_guard<mutex> lg(d_alive_mutex);
+			if (spirit_state_get(d_spirit.get_state().system, SPIRIT_STATE_ALIVE) == 0) 
+			{
+				break;
+			}
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // ????????????
+	}
 	// Exit
 	spirit::del_pid_file((PID_FILE_PATH + std::string(d_note.name)).c_str());
 	return 0;
@@ -94,3 +112,15 @@ int DaemonOrigin::stop(const std::string & args)
 	// check pid, sigint, msg shutdown
 	return 0;
 }
+
+int DaemonOrigin::restart(const std::string & args)
+{
+	return 0;
+}
+
+int DaemonOrigin::check(const std::string & args)
+{
+	return 0;
+}
+
+

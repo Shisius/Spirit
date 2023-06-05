@@ -10,7 +10,7 @@ class Shaman;
 namespace spirit
 {
 
-	int create_shaman(const SpiritNote & note, std::unique_ptr<Shaman> shaman);
+	std::unique_ptr<Shaman> create_shaman(const SpiritNote & self_note, const SpiritNote & target_note);
 
 } // spirit
 
@@ -18,14 +18,15 @@ class Shaman
 {
 protected:
 
-	SpiritNote d_note;
+	SpiritNote d_target_note;
+	SpiritNote d_self_note;
 
 public:
 
-	Shaman(const SpiritNote & note) : d_note(note) {}
+	Shaman(const SpiritNote & self_note, const SpiritNote & target_note) : d_target_note(target_note), d_self_note(self_note) {}
 	~Shaman();
 
-	int req(unsigned char title, void * data);
+	int req(unsigned char title, void * data, unsigned int size);
 
 };
 
