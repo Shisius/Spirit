@@ -14,6 +14,19 @@ namespace spirit
 
 } // spirit
 
+enum class ShamanReqResult : int
+{
+	CONN_ERR = -2,
+	DENIED,
+	ACCEPTED,
+	DATA
+}
+
+enum class ShamanReqFlags : unsigned int
+{
+
+}
+
 class Shaman
 {
 protected:
@@ -21,12 +34,34 @@ protected:
 	SpiritNote d_target_note;
 	SpiritNote d_self_note;
 
+	SpiritMsg d_lastmsg;
+
 public:
 
 	Shaman(const SpiritNote & self_note, const SpiritNote & target_note) : d_target_note(target_note), d_self_note(self_note) {}
 	~Shaman();
 
-	int req(unsigned char title, void * data, unsigned int size);
+	int req(unsigned char title, void * data, unsigned int size, unsigned int flags);
+
+	// Returns Title
+	unsigned char get_ans(void * data, unsigned int size); // ???
+
+	SpiritState req_state();
+
+	virtual int send_spmsg(SpiritMsg & msg) = 0;
+
+};
+
+class MqShaman : public Shaman
+{
+protected:
+
+	std::unique_ptr<MqReceiver> d_ansmq;
+
+public:
+
+	MqShaman(const SpiritNote & self_note, const SpiritNote & target_note) : Shaman(self_note, target_note) {}
+	~MqShaman();
 
 };
 

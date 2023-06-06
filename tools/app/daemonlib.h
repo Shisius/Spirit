@@ -4,17 +4,13 @@
 #include <string>
 #include <csignal>
 
-typedef struct std_ioe_fd
-{
-	int in;
-	int out;
-	int err;
-} StdIoeFd;
-
 namespace spirit {
 
 	static const std::string PID_FILE_PATH = "/var/run/spirit/";
 	static const std::string LOG_FILE_PATH = "/var/log/spirit/";
+
+	const char * make_pid_file_name(const char * sp_name);
+	const char * make_log_file_name(const char * sp_name);
 
 	int write_pid_file(const char * full_path);
 
@@ -26,7 +22,7 @@ namespace spirit {
 
 	int doublefork();
 
-	StdIoeFd redirect_std(const char * full_path);
+	int redirect_std(const char * full_path);
 
 } // spirit
 

@@ -45,7 +45,7 @@ namespace spirit {
 		return 0;
 	}
 
-	StdIoeFd redirect_std(const char * full_path)
+	int redirect_std(const char * full_path)
 	{
 
 	}

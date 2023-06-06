@@ -11,6 +11,7 @@ protected:
 	std::unique_ptr<SpiritBase> d_spirit;
 	SpiritNote d_note;
 	std::mutex d_alive_mutex;
+	int d_logfd;
 
 	std::map<std::string, std::function<int(std::string)>> d_cmd_map;
 

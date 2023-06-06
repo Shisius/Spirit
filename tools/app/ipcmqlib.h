@@ -21,9 +21,9 @@ namespace spirit {
 
 	/**
 	 * onetime_mqsend
-	 * Opens mq, sends msg, closes mq, returnes true on success
+	 * Opens mq, sends msg, closes mq, returnes 0 on success
 	 */
-	bool onetime_mqsend(const std::string & send_name, const SpiritMsg & msg);
+	int onetime_mqsend(const std::string & send_name, const SpiritMsg & msg, unsigned int msg_prio = 0);
 
 } //spirit
 

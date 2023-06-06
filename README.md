@@ -5,19 +5,15 @@ Spirit - like systemd but more useful features available.
 2. On start - read note files.
 3. For everyone - check state, check,restart if state exists
 4. If no state - start, then restart
-5. Shaman req, ans
+
 6. use map for enum2word for states.
 
-7. Spirit can create shamans and has its own ... - part of spirit.
-8. Spiritd define note - for connect to spiritd.
 9. check ipc multiple connections
 10. shaman can handle accepted, denied, other reqs
 11. Role specs shamans
 12. ASk for QUestion for ioctl - special bit in ans - shaman handle it as a req for spirit. maybe 2 ioctl types? Ask What do you need for 2 type.
 
-13. role2str
 14. ipc: spirit creates "role" mq for listening and opens "role_other" for answers.
-15. spirit_ipc lib
 16. ipc: shaman opens "role" mq for sendind and creates "role_other" for reading answers.
 17. Consider use OneTimeIPC, EveryAnsOpenIPC, ContiniousIPC
 
@@ -27,36 +23,17 @@ Spirit - like systemd but more useful features available.
 rule file contains:
 1. roles. for every role - some description, available cmds.
 2. start,stop,restart rules
-3. pidfile
+3. pidfile?
 
 generate role file in /var/spirit/role1
 
 # TO DO
 
-SIZE 2 LENGTH?!
-
-DaemonOrigin:
-daemonlib: doublefork, check running, redirect std
-???? Stdfs - maybe one file and no stdin?
-Main - maybe template function?:
-	parse arg - maybe map<string, function>, d_cmd_map, add_cmd():
-		Start:
-			Create Spirit, setup, run, create sigint handler
-		Stop:
-			Send sigint 
-		Check:
-			Check if running
-		Restart:
-
-int main(int argc, char ** argv)
-{
-	Daemon<MySpirit> d(args); // d = make_unique<MySpirit>(args);
-	return Daemon.run(argc, argv);
-}
+SpiritSystemUnit - to all ??
 ??Two types of spirit construction in daemonorigin
-?? Alive check period??
 
 SpiritBase:
+If smth blocked - set restart bit - master will restart the spirit
 
 Log:
 cout logger. Part of Spirit_Base. If you want use it - create in setup and use print_sp()? but how?
@@ -80,14 +57,13 @@ spiritd helps other spirits to create shamans (Spirit note).
 d_shaman.recv() -> switch (ANS_ID): do smth;
 communication way depends of: type(ipc, ioctl...), special name(/dev/setdevm, ipc_name, rpmsg_name) - this name - in special file.
 Shaman can wait the spirit for start
-Shaman methods: send_spirit_msg(TITLE, data, size), 
+Shaman methods: 
 recv callback(switch title, func(title, data* , size) of func(spmsg)) - for answers.
 handle answers ACCEPTED, DENIED
-get state
 Shaman start(setup), shaman stop(destroy)
 Shaman contains MqReceivers and other stuff.
 Only req and read the answers.
-Req -> Wait for Accepted? How long? 
+Req -> Wait for Accepted 
 Blocking request - depends on spirit type (for ioctl for example)
 Example: create_ins_shaman(INS_IPC_Shaman: IPCShaman, INSShaman)
 

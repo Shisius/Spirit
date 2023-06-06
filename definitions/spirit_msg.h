@@ -74,8 +74,8 @@ struct __attribute__((packed, aligned(1))) SpiritMsg
 	unsigned char title;	// role specific message header
 	unsigned char format;
 
-	// Data length 32 bit
-	unsigned int length;
+	// Data size 32 bit
+	unsigned int size;
 	// Data pointer. Can be array[]
 	void * data;
 };

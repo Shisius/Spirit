@@ -4,6 +4,9 @@
 DaemonOrigin::DaemonOrigin(std::unique_ptr<SpiritBase> spirit_ptr) : d_spirit(spirit_ptr)
 {
 	d_cmd_map.emplace(std::string(SPIRIT_START_WORD), std::bind(&DaemonOrigin::start, this, std::placeholders::_1));
+	d_cmd_map.emplace(std::string(SPIRIT_STOP_WORD), std::bind(&DaemonOrigin::stop, this, std::placeholders::_1));
+	d_cmd_map.emplace(std::string(SPIRIT_RESTART_WORD), std::bind(&DaemonOrigin::restart, this, std::placeholders::_1));
+	d_cmd_map.emplace(std::string(SPIRIT_CHECK_WORD), std::bind(&DaemonOrigin::check, this, std::placeholders::_1));
 
 	signal(SIGINT, &DaemonOrigin::sigint);
 }
@@ -27,12 +30,12 @@ int DaemonOrigin::setup()
     	printf("Attach signal failed\n");
     	return result;
     }
-
+    // Check spirit
     if (d_spirit == nullptr) {
 		printf("No spirit detected!\n");
 		return -1;
 	}
-
+	// Get note
 	d_note = d_spirit->get_note();
 
     return result;
@@ -43,7 +46,8 @@ void DaemonOrigin::sigint(int sigval)
 	lock_guard<mutex> lg(d_alive_mutex);
 	printf("SIGINT %d. Spirit %s will be destroyed\n", sigval, d_note.name);
 	// destroy spirit here
-	d_spirit->destroy();
+	if (d_spirit)
+		d_spirit->destroy();
 }
 
 void DaemonOrigin::help()
@@ -84,32 +88,32 @@ int DaemonOrigin::start(const std::string & args)
 		printf("Doublefork failed on step %d (fork|chdir|setsid|fork)\n", -1*result);
 	}
 	// Create log file
-
+	d_logfd = spirit::redirect_std(spirit::make_log_file_name(d_note.name));
+	if (d_logfd < 0)
+		printf("Redirect std failed!\n");
+	// Write pid file
+	if (spirit::write_pid_file(spirit::make_pid_file_name(d_note.name)) < 0)
+	{
+		printf("Write pid file failed!\n");
+		return -1;
+	}
 	// Run daemon here
 	result = d_spirit->setup(args);
 	if (result != 0) {
 		printf("Spirit %s setup failed with code %d!\n", d_note.name, result);
 		return -1;
 	}
-	// Alive cycle
-	while (true) {
-		{
-			lock_guard<mutex> lg(d_alive_mutex);
-			if (spirit_state_get(d_spirit.get_state().system, SPIRIT_STATE_ALIVE) == 0) 
-			{
-				break;
-			}
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // ????????????
-	}
+	// Alive cycle. Main thread
+	d_spirit->mainloop();
 	// Exit
-	spirit::del_pid_file((PID_FILE_PATH + std::string(d_note.name)).c_str());
+	spirit::del_pid_file(spirit::make_pid_file_name(d_note.name));
 	return 0;
 }
 
 int DaemonOrigin::stop(const std::string & args)
 {
 	// check pid, sigint, msg shutdown
+	// If stop failed - check if stopped - sig kill, del pid file
 	return 0;
 }
 
@@ -120,6 +124,7 @@ int DaemonOrigin::restart(const std::string & args)
 
 int DaemonOrigin::check(const std::string & args)
 {
+	// read pid file, send state msg
 	return 0;
 }
 

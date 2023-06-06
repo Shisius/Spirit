@@ -10,9 +10,13 @@ extern "C" {
 // State
 unsigned char spirit_state_set(unsigned char state, unsigned char bit, unsigned char value);
 unsigned char spirit_state_get(unsigned char state, unsigned char bit);
+unsigned char spirit_state_alive(unsigned char state);
+
+// Timeout
+unsigned int get_resp_timeout_us(unsigned short timeout_bit);
 
 // Message
-SpiritMsg create_spirit_msg(unsigned char sender, unsigned char receiver, unsigned char title, unsigned int length, void * data); 
+SpiritMsg create_spirit_msg(unsigned char sender, unsigned char receiver, unsigned char title, unsigned int size, void * data); 
 
 unsigned int spirit_msg_check(SpiritMsg* smsg);
 SpiritMsg create_spirit_none_msg();

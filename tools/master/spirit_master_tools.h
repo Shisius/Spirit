@@ -1,11 +1,11 @@
 #ifndef _SPIRIT_MASTER_TOOLS_H_
 #define _SPIRIT_MASTER_TOOLS_H_
 
-#include "spirit_types.h"
 #include <string>
 #include <vector>
-#include "writer.h"
-#include "document.h"
+#include "spirit_types.h"
+#include "app_defs.h"
+#include "json.h" // from third
 
 namespace spirit
 {
@@ -15,21 +15,6 @@ namespace spirit
 	const std::string SPIRIT_FOLDER_PATH_STATE = SPIRIT_FOLDER_PATH_TEMP + "/state";
 	const std::string SPIRIT_DEFAULT_TIMEOUT_US = 1000;
 } // spirit
-
-/**
- * SpiritSystemUnit
- * Describe spirit init file content.
- */
-struct SpiritSystemUnit
-{
-	unsigned char role;
-	SPIRIT_FMT_WAY way;
-	std::string name;
-	unsigned int start_timeout_us;
-	unsigned int stop_timeout_us;
-	std::vector<unsigned char> titles;
-	// std::string start_cmd;
-};
 
 namespace spirit
 {	

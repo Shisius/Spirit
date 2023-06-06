@@ -13,6 +13,7 @@ extern "C" {
  * role - spirit role
  * way - communication way (IPC, RPMSG, IOCTL...)
  * titles - 32 x hex message words (32 * 8 = 256) - define available message titles (0x02 0x00 0x00 0x00 ... - means only title 0x01 is available)
+ * timeout - 4x4 bit fields. Timeout value in microseconds = base << field value 
  */
 #define SPIRIT_TITLES_NOTE_SIZE 32
 #define SPIRIT_SPECIAL_NAME_MAX_LENGTH 32
@@ -20,9 +21,23 @@ typedef struct spirit_note
 {
 	unsigned char role; //SPIRIT_ROLE
 	unsigned char way; //SPIRIT_FMT_WAY
+    unsigned short timeout; //Timeout complex word
 	unsigned char[SPIRIT_TITLES_NOTE_SIZE] titles;
     unsigned char[SPIRIT_SPECIAL_NAME_MAX_LENGTH] name;
 } __attribute__((packed, aligned(1))) SpiritNote;
+
+/**
+ * Response - means time between spirit request and fast answer(accepted/denied)
+ */
+typedef enum
+{
+    SPIRIT_TIMEOUT_MASK_RESPONSE = 0x000F
+} SpiritTimeoutMask;
+
+typedef enum
+{
+    SPIRIT_TIMEOUT_BASE_RESPONSE = 1
+} SpiritTimeoutBase;
 
 #if defined __cplusplus
 }
