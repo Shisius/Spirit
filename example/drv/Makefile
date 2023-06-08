@@ -1,7 +1,7 @@
 
 SRC_PATH := .
 
-SPIRIT_DIR_PATH := /home/cat/Projects/Spirit
+SPIRIT_DIR_PATH := $(src)/../..
 
 obj-m += $(SRC_PATH)/spiritko.o
 
