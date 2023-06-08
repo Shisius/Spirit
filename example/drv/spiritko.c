@@ -3,9 +3,10 @@
 #include <linux/init.h>
 #include <linux/kthread.h>
 #include <linux/types.h>
+#include <linux/fs.h>
 #include "spirit_msg.h"
 
-#define DEVICE_NAME "spiritdrv"
+static const char * DEVICE_NAME = "spdrv";
 #define DRIVER_VERSION "v1.0"
 
 #define MAGIC 0xF239
@@ -17,7 +18,6 @@
 
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRIVER_VERSION);
-MODULE_SUPPORTED_DEVICE(DEVICE_NAME);
 
 static spinlock_t m_lock;
 
@@ -68,7 +68,12 @@ static long device_ioctl(struct file *filp, unsigned int ioctl_num, unsigned lon
 		case IOCTL_SPIRIT_MSG:
 		{
 			result = copy_from_user(&spmsg, (SpiritMsg*)param, sizeof(SpiritMsg));
-
+			if (result == 0) {
+				DEBUG("title = %d", spmsg.title);
+				if (copy_to_user((SpiritMsg*)param, &spmsg, sizeof(SpiritMsg))) result = -EINVAL;
+			} else {
+				ERROR("copy_from_user failed with %d", result);
+			}
 			break;
 		}
 		default:
@@ -111,7 +116,7 @@ static int __init drv_init(void)
 static void __exit drv_exit(void)
 {
 	DEBUG("Unloading drv...");
-	unregister_chrdev(device_major, DEVICE_NAME);
+	unregister_chrdev(0, DEVICE_NAME);
 	DEBUG("Driver %s unloaded", DEVICE_NAME);
 }
 
