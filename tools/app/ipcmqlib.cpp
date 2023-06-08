@@ -15,8 +15,12 @@ namespace spirit
 			return -1;
 		}
 		// Send
-		result = mq_send(mqsend_d, &msg, sizeof(msg), msg_prio);
-		if (result < 0) printf("MQ send error: %s\n", send_name.c_str());
+		char * buf;
+		int buf_size = pack_spirit_msg(msg, buf);
+		if (buf_size > 0) {
+			result = mq_send(mqsend_d, buf, buf_size, msg_prio);
+			if (result < 0) printf("MQ send error: %s\n", send_name.c_str());
+		}
 		// Close
 		if (mq_close(mqsend_d) < 0) {
 			printf("MQ close error: %s\n", send_name.c_str());

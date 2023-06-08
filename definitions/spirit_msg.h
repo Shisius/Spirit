@@ -5,11 +5,11 @@
 extern "C" {
 #endif 
 
-#define SPIRIT_MSG_VERSION 0x010102
+#define SPIRIT_MSG_VERSION 0x010103
 
 /**
  * Spirit format structure (from LSB to MSB):
- * DIR(1 bit) TYPE(3 bit) WAY(4 bit)
+ * DIR(1 bit) TYPE(3 bits) ASK(1 bit) WAY(3 bits)
  * DIR can be request or answer
  * TYPE can be CUSTOM (role specific message, depends on title) or one of universal for every role messages.
  * WAY means what kind of communication is used
@@ -58,10 +58,11 @@ typedef enum
 #define SPIRIT_FMT_WAY_MASK 0xE0
 typedef enum
 {
-	SPIRIT_FMT_WAY_IPC = 0, // Inter process
-	SPIRIT_FMT_WAY_ITHR,	// Inter threads
-	SPIRIT_FMT_WAY_RPMSG,	// Remoteproc message
-	SPIRIT_FMT_WAY_IOCTL	// IOCTL
+	SPIRIT_FMT_WAY_IPCMQ = 0, 	// Inter process, data is sent by message queue
+	SPIRIT_FMT_WAY_RPMSG = 1,	// Remoteproc message
+	SPIRIT_FMT_WAY_IOCTL = 2,	// IOCTL
+	SPIRIT_FMT_WAY_ITHR = 3,	// Inter threads
+	SPIRIT_FMT_WAY_MQSHM = 4	// Spirit Message in mq, data by shmem 
 } SPIRIT_FMT_WAY;
 
 #define SPIRIT_TITLES_NUMBER 256

@@ -5,7 +5,7 @@ SPIRIT_DIR_PATH := $(src)/../..
 
 obj-m += $(SRC_PATH)/spiritko.o
 
-ccflags-y:=-I$(SPIRIT_DIR_PATH)/definitions -std=gnu99 -Wno-declaration-after-statement
+ccflags-y:=-I$(SPIRIT_DIR_PATH)/definitions
 
 export KERNEL_SRC=/lib/modules/$(shell uname -r)/build
 
