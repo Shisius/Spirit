@@ -110,7 +110,7 @@ static int __init drv_init(void)
 		DEBUG("Driver successfully loaded");
 	}
 
-	return result;
+	return 0;
 }
 
 static void __exit drv_exit(void)
