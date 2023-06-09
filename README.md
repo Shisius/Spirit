@@ -29,15 +29,20 @@ generate role file in /var/spirit/role1
 
 # TO DO
 
+spirit_version_t - where?
+
 SpiritSystemUnit - to all ??
 ??Two types of spirit construction in daemonorigin
 
 SpiritBase:
 If smth blocked - set restart bit - master will restart the spirit
+d_note from master, template, get_role()
+func get_note()
 
 Log:
 cout logger. Part of Spirit_Base. If you want use it - create in setup and use print_sp()? but how?
 Check if printf is threadsafe.
+Save old log to name.log.old
 ```
 printf(const char *fmt, ...)
 {
