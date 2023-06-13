@@ -29,11 +29,11 @@ public:
 		}
 	}
 
-	virtual int setup(const std::string & args);
+	virtual int setup(const SpiritNote & sp_note);
 	virtual void destroy();
 	virtual void mainloop();
 
-	virtual SpiritNote get_note();
+	virtual unsigned char get_role();
 
 
 	SpiritState get_state() {return d_state.load();}

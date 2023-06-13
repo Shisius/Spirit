@@ -11,6 +11,7 @@ namespace spirit
 {
 
 	std::unique_ptr<Shaman> create_shaman(const SpiritNote & self_note, const SpiritNote & target_note);
+	SpiritNote get_note(unsigned char role_id);
 
 } // spirit
 

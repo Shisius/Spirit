@@ -10,6 +10,7 @@ struct SpiritSystemUnit
 	unsigned char role;
 	SPIRIT_FMT_WAY way;
 	std::string name;
+	unsigned int priority;
 	unsigned int start_timeout_us;
 	unsigned int stop_timeout_us;
 	std::vector<unsigned char> titles;

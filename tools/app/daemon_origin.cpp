@@ -36,7 +36,7 @@ int DaemonOrigin::setup()
 		return -1;
 	}
 	// Get note
-	d_note = d_spirit->get_note();
+	d_note = spirit::get_note();
 
     return result;
 }
@@ -98,7 +98,7 @@ int DaemonOrigin::start(const std::string & args)
 		return -1;
 	}
 	// Run daemon here
-	result = d_spirit->setup(args);
+	result = d_spirit->setup(d_note);
 	if (result != 0) {
 		printf("Spirit %s setup failed with code %d!\n", d_note.name, result);
 		return -1;

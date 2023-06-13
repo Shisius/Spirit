@@ -36,8 +36,6 @@ SpiritSystemUnit - to all ??
 
 SpiritBase:
 If smth blocked - set restart bit - master will restart the spirit
-d_note from master, template, get_role()
-func get_note()
 
 Log:
 cout logger. Part of Spirit_Base. If you want use it - create in setup and use print_sp()? but how?
