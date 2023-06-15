@@ -29,6 +29,8 @@ public:
 	 * On setup: load spirit unit files
 	 */
 	int setup();
+	void destroy();
+	void mainloop();
 
 	int start();
 	int stop();
