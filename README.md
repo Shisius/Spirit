@@ -28,19 +28,20 @@ rule file contains:
 generate role file in /var/spirit/role1
 
 # TO DO
-
-spirit_version_t - where?
+SpiritMasterTimeout?
 
 SpiritSystemUnit - to all ??
 ??Two types of spirit construction in daemonorigin
 
 SpiritBase:
 If smth blocked - set restart bit - master will restart the spirit
+Setup: if note is not matched the spirit => return fail.
 
 Log:
 cout logger. Part of Spirit_Base. If you want use it - create in setup and use print_sp()? but how?
 Check if printf is threadsafe.
 Save old log to name.log.old
+
 ```
 printf(const char *fmt, ...)
 {
@@ -84,7 +85,7 @@ Spiritlib contains
 	- spirit special msg handling
 
 SpiritMaster can:
-1. Look through spirit.d lib and run the spirits
+1. Look through spirit.d dir and run the spirits
 2. Check if spirit is alive and restart it, update spirit state
 	If spirit doesn't answer, execute special_name check - if result is negative - restart
 3. CMD Request_spirit_note(role)
@@ -94,7 +95,6 @@ SpiritState:
 1. Available messages (option - short and long msg - depends of spirit msg data size)
 
 # Issues:
-1. IOCTL - transfer spirit message with void* data, copy_from_user(spirit_msg.data)
 2. RPMSG - double read
 
 # Questions

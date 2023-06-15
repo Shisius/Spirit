@@ -9,6 +9,11 @@ extern "C" {
 #endif
 
 /**
+ * Spirit protocol version. It is defined in spirit_msg.h.
+ */
+typedef unsigned int spirit_version_t;
+
+/**
  * Spirit description. For shaman creation
  * role - spirit role
  * way - communication way (IPC, RPMSG, IOCTL...)

@@ -2,6 +2,8 @@
 #define _SPIRIT_BASE_TOOLS_H_
 
 #include "spirit_types.h"
+#include "spirit_master_defs.h"
+#include "spirit_names.h"
 
 #if defined __cplusplus
 extern "C" {
@@ -18,9 +20,9 @@ unsigned int get_resp_timeout_us(unsigned short timeout_bit);
 /// Message
 SpiritMsg create_spirit_msg(unsigned char sender, unsigned char receiver, unsigned char title, unsigned int size, void * data); 
 // Pack Spirit Message into char buf. Returns buf size of -1 if failed.
-int pack_spirit_msg(const SpiritMsg * msg, char * buf);
+//int pack_spirit_msg(const SpiritMsg * msg, char * buf);
 // Unpack Spirit Message from char buf. Returns 0 in success, -1 if failed.
-int unpack_spirit_msg(const char * buf, unsigned int size, SpiritMsg * msg);
+//int unpack_spirit_msg(const char * buf, unsigned int size, SpiritMsg * msg);
 
 unsigned int spirit_msg_check(SpiritMsg* smsg);
 SpiritMsg create_spirit_none_msg();

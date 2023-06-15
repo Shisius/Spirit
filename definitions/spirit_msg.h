@@ -5,7 +5,7 @@
 extern "C" {
 #endif 
 
-#define SPIRIT_MSG_VERSION 0x010103
+#define SPIRIT_MSG_VERSION 0x01010300
 
 /**
  * Spirit format structure (from LSB to MSB):

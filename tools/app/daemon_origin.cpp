@@ -36,7 +36,7 @@ int DaemonOrigin::setup()
 		return -1;
 	}
 	// Get note
-	d_note = spirit::get_note();
+	d_note = spirit::get_note(d_spirit->get_role());
 
     return result;
 }
@@ -104,7 +104,7 @@ int DaemonOrigin::start(const std::string & args)
 		return -1;
 	}
 	// Alive cycle. Main thread
-	d_spirit->mainloop();
+	d_spirit->run();
 	// Exit
 	spirit::del_pid_file(spirit::make_pid_file_name(d_note.name));
 	return 0;

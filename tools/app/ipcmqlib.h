@@ -13,6 +13,20 @@
 
 namespace spirit {
 
+	enum IpcMqResult {
+		MQDATA_ERROR = -3,	// Wrong spirit_msg.data pointer
+		MQSIZE_ERROR = -2,	// SpiritMsg pack size > max mq size
+		MQLIB_ERROR = -1,	// -1 returned after mq call
+		MQ_SUCCESS = 0
+	};
+
+	/**
+	 * Base functions - send and recv SpiritMsg by MQ
+	 */
+	ssize_t mqget_msgsize(const mqd_t mq_id);
+	int mqsend_spmsg(const SpiritMsg & msg, mqd_t mq_id, ssize_t max_size, unsigned int msg_prio = 0);
+	int mqrecv_spmsg(SpiritMsg & msg, mqd_t mq_id, ssize_t max_size, unsigned int * msg_prio = nullptr);
+
 	/**
 	 * onetime_mqreq
 	 * Creates ans mq, opens req mq, sends msg, waits for answer, returned none_msg if no answer on timeout
