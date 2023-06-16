@@ -42,14 +42,14 @@ public:
 	Shaman(const SpiritNote & self_note, const SpiritNote & target_note) : d_target_note(target_note), d_self_note(self_note) {}
 	~Shaman();
 
-	int req(unsigned char title, void * data, unsigned int size, unsigned int flags);
+	virtual int req(unsigned char title, void * data, unsigned int size, unsigned int flags);
 
 	// Returns Title
 	unsigned char get_ans(void * data, unsigned int size); // ???
 
 	SpiritState req_state();
 
-	virtual int send_spmsg(SpiritMsg & msg) = 0;
+	//virtual int send_spmsg(SpiritMsg & msg) = 0;
 
 };
 

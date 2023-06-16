@@ -29,6 +29,7 @@ generate role file in /var/spirit/role1
 
 # TO DO
 SpiritMasterTimeout?
+Accepted + timeout in data
 
 SpiritSystemUnit - to all ??
 ??Two types of spirit construction in daemonorigin
