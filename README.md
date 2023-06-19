@@ -29,7 +29,6 @@ generate role file in /var/spirit/role1
 
 # TO DO
 SpiritMasterTimeout?
-Accepted + timeout in data
 
 SpiritSystemUnit - to all ??
 ??Two types of spirit construction in daemonorigin
@@ -94,6 +93,10 @@ SpiritMaster can:
 
 SpiritState:
 1. Available messages (option - short and long msg - depends of spirit msg data size)
+
+Spirits:
+FPGA as daemon - for manage, save adc, etc...
+Logging in FPGA - start - choose adc,pprb,frame, choose event - start/stop, 1000adc/pulses, etc
 
 # Issues:
 2. RPMSG - double read

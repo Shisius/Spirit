@@ -29,12 +29,17 @@ SpiritMsg create_spirit_none_msg();
 unsigned int spirit_msg_is_none();
 
 // Make format
-void spirit_msg_set_way(SpiritMsg* smsg, unsigned char way);
+void spirit_msg_set_ptr(SpiritMsg* smsg, unsigned char ptr);
 void spirit_msg_set_dir(SpiritMsg* smsg, unsigned char dir);
 void spirit_msg_set_type(SpiritMsg* smsg, unsigned char type);
+void spirit_msg_set_ask(SpiritMsg * smsg);
+
 void spirit_msg_make_ans(SpiritMsg* smsg);
 void spirit_msg_make_req(SpiritMsg* smsg);
-void spirit_msg_set_ask(SpiritMsg * smsg);
+void spirit_msg_make_cho(SpiritMsg* smsg); // set req and ask bit.
+void spirit_msg_make_accepted(SpiritMsg* smsg);
+void spirit_msg_make_denied(SpiritMsg* smsg);
+void spirit_msg_make_done(SpiritMsg* smsg);
 
 // Make special spirit messages. Way bits won't be set.
 SpiritMsg spirit_msg_make_req_state(unsigned char sender, unsigned char receiver);

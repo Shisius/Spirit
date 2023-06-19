@@ -12,6 +12,10 @@ extern "C" {
  * Spirit protocol version. It is defined in spirit_msg.h.
  */
 typedef unsigned int spirit_version_t;
+/**
+ * Time in microseconds. Usually used with ACCEPTED answer.
+ */
+typedef unsigned int spirit_time_t; 
 
 /**
  * Spirit description. For shaman creation
@@ -22,6 +26,13 @@ typedef unsigned int spirit_version_t;
  */
 #define SPIRIT_TITLES_NOTE_SIZE 32
 #define SPIRIT_SPECIAL_NAME_MAX_LENGTH 32
+typedef enum
+{
+    SPIRIT_FMT_WAY_IPCMQ = 0,   // Inter process, data is sent by message queue
+    SPIRIT_FMT_WAY_RPMSG = 1,   // Remoteproc message
+    SPIRIT_FMT_WAY_IOCTL = 2,   // IOCTL
+    SPIRIT_FMT_WAY_ITHR = 3,    // Inter threads
+} SPIRIT_FMT_WAY;
 typedef struct spirit_note 
 {
 	unsigned char role; //SPIRIT_ROLE

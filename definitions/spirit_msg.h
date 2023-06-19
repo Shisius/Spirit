@@ -5,14 +5,14 @@
 extern "C" {
 #endif 
 
-#define SPIRIT_MSG_VERSION 0x01010300
+#define SPIRIT_MSG_VERSION 0x01020300
 
 /**
  * Spirit format structure (from LSB to MSB):
- * DIR(1 bit) TYPE(3 bits) ASK(1 bit) WAY(3 bits)
+ * DIR(1 bit) TYPE(3 bits) ASK(1 bit) PTR(3 bits)
  * DIR can be request or answer
  * TYPE can be CUSTOM (role specific message, depends on title) or one of universal for every role messages.
- * WAY means what kind of communication is used
+ * PTR means where the data is stored
  */
 
 /**
@@ -30,6 +30,7 @@ typedef enum
 /**
  * SPIRIT_FMT_TYPES CUSTOM Messages is used for data transferring and depends of sender's/receiver's title
  * Other messages is universal for every spirit
+ * ACCEPTED - cmd accepted, if size > 0 => wait for be finished. After this, DONE or CUSTOM will be sent 
  */
 #define SPIRIT_FMT_TYPE_MASK 0x0E
 typedef enum
@@ -37,13 +38,12 @@ typedef enum
 	SPIRIT_FMT_ANS_CUSTOM = 0,
 	SPIRIT_FMT_ANS_ACCEPTED = 1,
 	SPIRIT_FMT_ANS_DENIED = 2,
-	SPIRIT_FMT_ANS_STATE = 3
+	SPIRIT_FMT_ANS_DONE = 3
 } SPIRIT_FMT_ANS_TYPE;
 typedef enum
 {
-	SPIRIT_FMT_REQ_CUSTOM = 0,
-	SPIRIT_FMT_REQ_STATE = 1,
-	SPIRIT_FMT_REQ_SHUTDOWN = 2
+	SPIRIT_FMT_REQ_CUSTOM = 0
+
 } SPIRIT_FMT_REQ_TYPE;
 
 /**
@@ -55,17 +55,26 @@ typedef enum
  */
 #define SPIRIT_FMT_ASK_MASK 0x10
 
-#define SPIRIT_FMT_WAY_MASK 0xE0
+#define SPIRIT_FMT_PTR_MASK 0xE0
 typedef enum
 {
-	SPIRIT_FMT_WAY_IPCMQ = 0, 	// Inter process, data is sent by message queue
-	SPIRIT_FMT_WAY_RPMSG = 1,	// Remoteproc message
-	SPIRIT_FMT_WAY_IOCTL = 2,	// IOCTL
-	SPIRIT_FMT_WAY_ITHR = 3,	// Inter threads
-	SPIRIT_FMT_WAY_MQSHM = 4	// Spirit Message in mq, data by shmem 
-} SPIRIT_FMT_WAY;
+	SPIRIT_FMT_PTR_SAME = 0, 	// Data is sent the same way as the message
+	SPIRIT_FMT_PTR_SHM = 1,		// Data in shmem. Value is offset
+	SPIRIT_FMT_PTR_PHM = 2,		// Data in physical memory.
+	SPIRIT_FMT_PTR_FILE = 3 	// Data in file. Value is offset
+} SPIRIT_FMT_PTR;
 
 #define SPIRIT_TITLES_NUMBER 256
+/**
+ * Common titles. For custom titles use SPIRIT_TITLE_COMMON_FIRST as the first title number.
+ */
+typedef enum
+{
+	SPIRIT_TITLE_STATE = 0,
+	SPIRIT_TITLE_SHUTDOWN = 1,
+	SPIRIT_TITLE_CUSTOM_FIRST = 16
+} SPIRIT_COMMON_TITLES;
+
 typedef struct SpiritMsg SpiritMsg;
 struct __attribute__((packed, aligned(1))) SpiritMsg
 {
