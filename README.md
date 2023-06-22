@@ -29,6 +29,8 @@ generate role file in /var/spirit/role1
 
 # TO DO
 SpiritMasterTimeout?
+State: change names
+Event for state bit common title - one event. Need reload.
 
 SpiritSystemUnit - to all ??
 ??Two types of spirit construction in daemonorigin
