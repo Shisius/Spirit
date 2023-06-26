@@ -30,9 +30,10 @@ typedef enum
 /**
  * SPIRIT_FMT_TYPES CUSTOM Messages is used for data transferring and depends of sender's/receiver's title
  * Other messages is universal for every spirit
- * ACCEPTED - cmd accepted, if size > 0 => wait for be finished. After this, DONE or CUSTOM will be sent 
+ * ACCEPTED - cmd accepted, if size > 0 => wait for be finished. After this, DONE or CUSTOM will be sent. If time > 0, wait for time. If time = 0, just wait.
  */
 #define SPIRIT_FMT_TYPE_MASK 0x0E
+#define SPIRIT_FMT_TYPE_MASK_POS 0
 typedef enum
 {
 	SPIRIT_FMT_ANS_CUSTOM = 0,
@@ -56,6 +57,7 @@ typedef enum
 #define SPIRIT_FMT_ASK_MASK 0x10
 
 #define SPIRIT_FMT_PTR_MASK 0xE0
+#define SPIRIT_FMT_PTR_MASK_POS 5
 typedef enum
 {
 	SPIRIT_FMT_PTR_SAME = 0, 	// Data is sent the same way as the message
@@ -72,6 +74,7 @@ typedef enum
 {
 	SPIRIT_TITLE_STATE = 0,
 	SPIRIT_TITLE_SHUTDOWN = 1,
+	SPIRIT_TITLE_EVENT = 2,			// Event for state bit. Argument is state bit position?
 	SPIRIT_TITLE_CUSTOM_FIRST = 16
 } SPIRIT_COMMON_TITLES;
 

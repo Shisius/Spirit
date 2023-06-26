@@ -32,6 +32,10 @@ SpiritMasterTimeout?
 State: change names
 Event for state bit common title - one event. Need reload.
 
+MqReceiver - stop/start. Shaman can recv ans by itself or turn on receiver.
+MqReceiver works every time and filter the msgs. If req -> pause receiver and invoke timed.
+If WAIT - event handler can be set, default handler can be set, trash can be redir to handler by flag.
+
 SpiritSystemUnit - to all ??
 ??Two types of spirit construction in daemonorigin
 
@@ -61,7 +65,7 @@ Shaman:
 dynamic shaman - abstract class
 spiritd helps other spirits to create shamans (Spirit note).
 d_shaman.recv() -> switch (ANS_ID): do smth;
-communication way depends of: type(ipc, ioctl...), special name(/dev/setdevm, ipc_name, rpmsg_name) - this name - in special file.
+communication way depends on: type(ipc, ioctl...), special name(/dev/setdevm, ipc_name, rpmsg_name) - this name - in special file.
 Shaman can wait the spirit for start
 Shaman methods: 
 recv callback(switch title, func(title, data* , size) of func(spmsg)) - for answers.

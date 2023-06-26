@@ -121,18 +121,18 @@ int MqReceiver::setup()
 	return 0;
 }
 
-void MqReceiver::notify_setup(MqReceiver * _mqrecevier)
+void MqReceiver::notify_setup(MqReceiver * _mqreceiver)
 {
 	struct sigevent sev;
     sev.sigev_notify = SIGEV_THREAD; /* Notify via thread */
     sev.sigev_notify_function = &MqReceiver::mq_event;
     sev.sigev_notify_attributes = nullptr; /* Could be pointer to pthread_attr_t structure */
-    sev.sigev_value.sival_ptr = _mqrecevier; /* Argument to threadFunc() */
+    sev.sigev_value.sival_ptr = _mqreceiver; /* Argument to threadFunc() */
 
-    if (mq_notify(_mqrecevier->d_mqid, &sev) < 0)
+    if (mq_notify(_mqreceiver->d_mqid, &sev) < 0)
     {
-        printf("MQ notify error %s\n", _mqrecevier->d_mqname.c_str());
-        _mqrecevier->d_error.store(spirit::MQLIB_ERROR);
+        printf("MQ notify error %s\n", _mqreceiver->d_mqname.c_str());
+        _mqreceiver->d_error.store(spirit::MQLIB_ERROR);
         return;
     }
 }
@@ -142,6 +142,7 @@ void MqReceiver::mq_event(union sigval sv)
 	MqReceiver * mq_recever_ptr = (MqReceiver *)(sv.sival_ptr);
 	lock_guard<mutex> lk(mq_recever_ptr->d_mut);
 	notify_setup(mq_recever_ptr);
+	d_isrecv.store(true);
 	mq_recever_ptr->d_cond.notify_one();
 	pthread_exit(nullptr);
 }
@@ -151,19 +152,36 @@ void MqReceiver::recv_loop()
 	SpiritMsg spmsg;
 	int result;
 	while (d_isalive.load()) {
-		lock_guard<mutex> lk(d_mut);
+		lock_guard<mutex> lk(d_mut); // ???
 		// Wait for event
-
-		while ( result >= 0 )
+		d_cond.wait(lk,[this]{return ( ( d_isrecv.load() && (!d_ispaused.load()) ) || !(d_isalive.load()) );});
+		while ( result >= 0 && d_isalive.load() )
 		{
 			result = mqrecv_spmsg(spmsg, d_mqid, d_maxsize, nullptr);
 			if (result >= 0) {
-
+				// Check if it is req or ans
+				// Invoke handler
+				result = d_msg_handler(spmsg);
+				// If need answer, send it
 			}
 		}
+
+		d_isrecv.store(false);
 	}
 	if (spmsg.data != nullptr)
 		delete spmsg.data;
+}
+
+int MqReceiver::answer(SpiritMsg & spmsg)
+{
+	std::string ans_name = make_ansmqname(d_mqname, spmsg.receiver);
+	// Set or check ANS bit here
+	return onetime_mqsend(ans_name, spmsg);
+}
+
+void MqReceiver::pause(bool ispaused)
+{
+	d_ispaused.store(ispaused);
 }
 
 MqReceiver::~MqReceiver()

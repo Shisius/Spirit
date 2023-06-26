@@ -20,6 +20,7 @@ enum class ShamanReqResult : int
 	CONN_ERR = -2,
 	DENIED,
 	ACCEPTED,
+	WAIT,
 	DATA
 }
 
@@ -36,6 +37,8 @@ protected:
 	SpiritNote d_self_note;
 
 	SpiritMsg d_lastmsg;
+
+	std::function<int(SpiritMsg&)> d_ans_handler = nullptr;
 
 public:
 
@@ -63,6 +66,8 @@ public:
 
 	MqShaman(const SpiritNote & self_note, const SpiritNote & target_note) : Shaman(self_note, target_note) {}
 	~MqShaman();
+
+	virtual int req(unsigned char title, void * data, unsigned int size, unsigned int flags);
 
 };
 

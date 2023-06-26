@@ -34,6 +34,11 @@ namespace spirit {
 	// void mq_delete_default(con)
 
 	/**
+	 * Misc functions
+	 */
+	std::string make_ansmqname(const std::string & name, unsigned char role);
+
+	/**
 	 * onetime_mqreq
 	 * Creates ans mq, opens req mq, sends msg, waits for answer, ans in msg, returned 0 on success
 	 */
@@ -62,6 +67,9 @@ protected:
 	std::thread d_recv_thread;
 	std::atomic<bool> d_isalive;
 	std::atomic<int> d_error; 
+	std::atomic<bool> d_isrecv;
+	std::atomic<bool> d_ispaused;
+
 	//std::function<void()> d_notify_setup();
 	static void notify_setup(MqReceiver*);
 	static void mq_event(union sigval sv);
@@ -74,11 +82,24 @@ public:
 
 	int get_error() {return d_error.load();}
 
+	void pause(bool ispaused);
+
+	/**
+	 * Answer to incomming msg. Receiver role should be set correctly. 
+	 */
+	int answer(SpiritMsg & spmsg);
+
+	/**
+	 * User should set msg handler for incomming msgs. 
+	 */
 	template< class _MsgHandler, class _Master>
 	MqReceiver(const std::string & mqname, _MsgHandler&& msg_handler, _Master&& master_ptr) : d_mqname(mqname)
 	{
 		d_msg_handler = std::bind(msg_handler, master_ptr, std::placeholders::_1);
 		d_error.store(0);
+		d_isrecv.store(false);
+		d_ispaused.store(false);
+		d_isalive.store(false);
 	}
 	~MqReceiver();
 
