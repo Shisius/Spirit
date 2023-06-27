@@ -9,7 +9,7 @@ namespace spirit
 		struct mq_attr attr;
 		if (mq_getattr(mq_id, &attr) < 0)
 		{
-		    return -1;
+		    return MQLIB_ERROR;
 		}
 		return attr.mq_msgsize;
 	}
@@ -29,20 +29,39 @@ namespace spirit
 		if (msg.size > 0)
 			memcpy(buf + sizeof(SpiritMsg) - sizeof(msg.data), msg.data, msg.size);
 		// Send
-		if (mq_send(mq_id, buf, packsize, msg_prio) < 0) return MQLIB_ERROR;
+		if (mq_send(mq_id, buf, packsize, msg_prio) < 0) {
+			if (result == EAGAIN) return MQ_FULL
+			else return MQLIB_ERROR;
+		}
 		// Free msg data
 		if (msg.data != nullptr)
 			delete msg.data;
 		return 0;
 	}
 
-	int mqrecv_spmsg(SpiritMsg & msg, mqd_t mq_id, ssize_t max_size, unsigned int * msg_prio)
+	int mqrecv_spmsg(SpiritMsg & msg, mqd_t mq_id, ssize_t max_size, unsigned int * msg_prio, unsigned int timeout_us)
 	{
 		if (max_size <= 0) return MQLIB_ERROR;
 		// Receive
 		char buf[max_size];
-		int result = mq_receive(mq_id, buf, max_size, msg_prio);
-		if (result < 0) return MQLIB_ERROR;
+		int result = 0;
+		timespec ts;
+		if (timeout_us == 0) {
+			result = mq_receive(mq_id, buf, max_size, msg_prio);
+		} else {
+			clock_gettime(CLOCK_MONOTONIC, &ts);
+			ts.tv_sec += timeout_us / 1000000;
+			ts.tv_nsec += (timeout_us % 1000000) * 1000;
+			if (ts.tv_nsec > 1000000000) {
+				ts.tv_sec++;
+				ts.tv_nsec -= 1000000000;
+			} 
+			result = mq_timedreceive(mq_id, buf, max_size, msg_prio, &ts);
+		}
+		if (result < 0) {
+			if (result == EAGAIN || result == ETIMEDOUT) return MQ_EMPTY
+			else return MQLIB_ERROR;
+		}
 		// Parse
 		memcpy(&msg, buf, sizeof(SpiritMsg) - sizeof(msg.data));
 		msg.data = nullptr;
@@ -80,15 +99,30 @@ namespace spirit
 
 	int onetime_mqreq(const std::string & req_name, const std::string & ans_name, SpiritMsg & msg, unsigned int timeout_us)
 	{
+		int result
 		// Create mq
-
+		std::string ansname = make_ansmqname(req_name, msg.sender);
+		mode_t perm =  S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH; //7777; 
+		int oflag = O_RDONLY | O_CREAT | O_EXCL;
+		mqd_t mqid = mq_open(ansname.c_str(), oflag, perm, nullptr/*d_pmqAttr*/);
+		if (mqid == static_cast<mqd_t>(-1)) {
+			printf("MQ create error: %s\n", ansname.c_str());
+			return MQLIB_ERROR;
+		}
+		ssize_t maxsize = spirit::mqget_msgsize(mqid);
+		if (maxsize < 0) return MQLIB_ERROR;
 		// Send req
-
-		// Get answer
-
+		result = onetime_mqsend(req_name, msg);
+		if (result >= 0) {
+			// Get answer
+			result = mqrecv_spmsg(msg, mqid, maxsize, nullptr, timeout_us);
+		}
 		// Close mq
-
-		return 0;
+		if (mq_close(mqid) < 0)
+			printf("MQ close error: %s\n", ansname.c_str());
+		if (mq_unlink(mqid) < 0)
+			printf("MQ unlink error %s\n", ansname.c_str());
+		return result;
 	}
 
 	mqd_t mq_create_default(const std::string & name)
@@ -112,6 +146,7 @@ int MqReceiver::setup()
 	}
 	// Get attr
 	d_maxsize = spirit::mqget_msgsize(d_mqid);
+	if (d_maxsize < 0) return MQLIB_ERROR;
 	// Notify
 	notify_setup(this);
 	if (d_error.load() != 0) return d_error.load();
@@ -143,16 +178,31 @@ void MqReceiver::mq_event(union sigval sv)
 	lock_guard<mutex> lk(mq_recever_ptr->d_mut);
 	notify_setup(mq_recever_ptr);
 	d_isrecv.store(true);
-	mq_recever_ptr->d_cond.notify_one();
+	mq_recever_ptr->d_cond.notify_all();
 	pthread_exit(nullptr);
+}
+
+int MqReceiver::timedrecv(SpiritMsg & spmsg, unsigned int timeout_us)
+{
+	int result = 0;
+	lock_guard<mutex> lk(d_mut);
+	bool waitres = d_cond.wait_for(lk, std::chrono::microseconds(timeout_us), [this]{return ( d_isrecv.load() || !(d_isalive.load()) );});
+	if (waitres && d_isalive.load()) {
+		result = mqrecv_spmsg(spmsg, d_mqid, d_maxsize, nullptr);
+	} else {
+		result = MQ_EMPTY;
+	}
+	d_isrecv.store(false);
+	return result;
 }
 
 void MqReceiver::recv_loop()
 {
 	SpiritMsg spmsg;
-	int result;
+	int result = 0;
 	while (d_isalive.load()) {
 		lock_guard<mutex> lk(d_mut); // ???
+		result = 0;
 		// Wait for event
 		d_cond.wait(lk,[this]{return ( ( d_isrecv.load() && (!d_ispaused.load()) ) || !(d_isalive.load()) );});
 		while ( result >= 0 && d_isalive.load() )
@@ -193,5 +243,5 @@ MqReceiver::~MqReceiver()
 	if (mq_close(d_mqid) < 0)
 		printf("MQ close error %s\n", d_mqname.c_str());
 	if (mq_unlink(d_mqname) < 0)
-		printf("MQ unlink error %s\n", d_mqname.c_str());;	
+		printf("MQ unlink error %s\n", d_mqname.c_str());	
 }

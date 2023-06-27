@@ -106,6 +106,7 @@ Logging in FPGA - start - choose adc,pprb,frame, choose event - start/stop, 1000
 
 # Issues:
 2. RPMSG - double read
+3. Test cv wait/pause
 
 # Questions
 

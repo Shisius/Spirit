@@ -12,24 +12,31 @@
 #include <atomic>
 #include <cstring>
 #include <malloc.h>
+#include <time.h>
+#include <chrono>
 
 #include "spirit_msg.h"
 
 namespace spirit {
 
 	enum IpcMqResult {
+		MQ_FULL = -5,		// Mq full and msg can't be send
+		MQ_EMPTY = -4,		// Empty mq
 		MQDATA_ERROR = -3,	// Wrong spirit_msg.data pointer
 		MQSIZE_ERROR = -2,	// SpiritMsg pack size > max mq size
 		MQLIB_ERROR = -1,	// -1 returned after mq call
-		MQ_SUCCESS = 0
+		MQ_SUCCESS = 0,
 	};
 
 	/**
 	 * Base functions - send and recv SpiritMsg by MQ
+	 * send ans recv functions return 0 on SUCCESS.
+	 * If fail => result<0 will be returned
+	 * If using timeout in recv, remember O_NONBLOCK shouldn't be set
 	 */
 	ssize_t mqget_msgsize(mqd_t mq_id);
 	int mqsend_spmsg(SpiritMsg & msg, mqd_t mq_id, ssize_t max_size, unsigned int msg_prio = 0);
-	int mqrecv_spmsg(SpiritMsg & msg, mqd_t mq_id, ssize_t max_size, unsigned int * msg_prio = nullptr);
+	int mqrecv_spmsg(SpiritMsg & msg, mqd_t mq_id, ssize_t max_size, unsigned int * msg_prio = nullptr, unsigned int timeout_us = 0);
 	mqd_t mq_create_default(const std::string & name);
 	// void mq_delete_default(con)
 
@@ -88,6 +95,11 @@ public:
 	 * Answer to incomming msg. Receiver role should be set correctly. 
 	 */
 	int answer(SpiritMsg & spmsg);
+
+	/**
+	 * Receive msg with timeout
+	 */
+	int timedrecv(SpiritMsg & spmsg, unsigned int timeout_us);
 
 	/**
 	 * User should set msg handler for incomming msgs. 

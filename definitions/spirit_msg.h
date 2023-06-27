@@ -69,6 +69,7 @@ typedef enum
 #define SPIRIT_TITLES_NUMBER 256
 /**
  * Common titles. For custom titles use SPIRIT_TITLE_COMMON_FIRST as the first title number.
+ * It is recommended to use the same title for request and answer for it.
  */
 typedef enum
 {
