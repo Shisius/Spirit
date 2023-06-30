@@ -49,6 +49,7 @@ void spirit_msg_make_done(SpiritMsg* smsg);
 unsigned char spirit_msg_get_ptr(SpiritMsg* smsg);
 unsigned char spirit_msg_get_type(SpiritMsg* smsg);
 unsigned char spirit_msg_is_ask(SpiritMsg* smsg);
+unsigned char spirit_msg_is_ans(SpiritMsg* smsg);
 
 // Make special spirit messages. Ptr bits won't be set.
 SpiritMsg spirit_msg_make_req_state(unsigned char sender, unsigned char receiver);

@@ -35,6 +35,9 @@ public:
 	int check(const std::string & args);
 	void help();
 
+	int send(SpiritMsg* smsg);
+	int force_stop();
+
 };
 
 #endif //_DAEMON_ORIGIN_H_

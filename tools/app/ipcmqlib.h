@@ -15,7 +15,7 @@
 #include <time.h>
 #include <chrono>
 
-#include "spirit_msg.h"
+#include "spirit_base_tools.h"
 
 namespace spirit {
 
@@ -44,6 +44,11 @@ namespace spirit {
 	 * Misc functions
 	 */
 	std::string make_ansmqname(const std::string & name, unsigned char role);
+
+	/**
+	 * Ask master for note or get it another way
+	 */
+	SpiritNote get_note(unsigned char role_id);
 
 	/**
 	 * onetime_mqreq

@@ -13,7 +13,6 @@ namespace spirit
 {
 
 	std::unique_ptr<Shaman> create_shaman(const SpiritNote & self_note, const SpiritNote & target_note);
-	SpiritNote get_note(unsigned char role_id);
 
 } // spirit
 
@@ -71,9 +70,11 @@ protected:
 
 	std::unique_ptr<MqReceiver> d_ansmq;
 
+	virtual int mq_handler(SpiritMsg&);
+
 public:
 
-	MqShaman(const SpiritNote & self_note, const SpiritNote & target_note) : Shaman(self_note, target_note) {}
+	MqShaman(const SpiritNote & self_note, const SpiritNote & target_note);
 	~MqShaman();
 
 	virtual int req(unsigned char title, void * data, unsigned int size, unsigned int flags);

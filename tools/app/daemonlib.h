@@ -3,12 +3,16 @@
 
 #include <string>
 #include <csignal>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 namespace spirit {
 
 	static const std::string PID_FILE_PATH = "/var/run/spirit/";
 	static const std::string LOG_FILE_PATH = "/var/log/spirit/";
 
+	int check_create_folder(const char * path);
 	const char * make_pid_file_name(const char * sp_name);
 	const char * make_log_file_name(const char * sp_name);
 

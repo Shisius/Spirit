@@ -28,12 +28,17 @@ rule file contains:
 generate role file in /var/spirit/role1
 
 # TO DO
-SpiritMasterTimeout?
-State: change names
 Event for state bit common title - one event. Need reload.
+ans handler - what is it return?
+!!!!!!!!daemon_tools.h ln82
+send msg by cmd line
+set state bit in atomic
+universal tools for spirit msg consruction from title, object
+handle event req
+mqdata -> new -> smsg -> handler -> stack -> delete.
+answer_data T -> 	-> new -> mqdata -> send -> delete
 
 MqReceiver - stop/start. Shaman can recv ans by itself or turn on receiver.
-MqReceiver works every time and filter the msgs. If req -> pause receiver and invoke timed.
 If WAIT - event handler can be set, default handler can be set, trash can be redir to handler by flag.
 
 SpiritSystemUnit - to all ??

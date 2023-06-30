@@ -75,6 +75,26 @@ namespace spirit
 		return 0;
 	}
 
+	std::string make_ansmqname(const std::string & name, unsigned char role)
+	{
+		return name + std::string(spirit_role2str(role));
+	}
+
+	SpiritNote get_note(unsigned char role_id)
+	{
+		SpiritNote note = create_spirit_null_note();
+		switch (role_id)
+		{
+			case SPIRIT_MASTER_ROLE:
+				note = get_spirit_master_note();
+				break;
+			default:
+				// Ask master for the note
+				;
+		}
+		return note;
+	}
+
 	int onetime_mqsend(const std::string & send_name, SpiritMsg & msg, unsigned int msg_prio)
 	{
 		int result;
@@ -200,6 +220,7 @@ void MqReceiver::recv_loop()
 {
 	SpiritMsg spmsg;
 	int result = 0;
+	bool isans;
 	while (d_isalive.load()) {
 		lock_guard<mutex> lk(d_mut); // ???
 		result = 0;
@@ -208,11 +229,17 @@ void MqReceiver::recv_loop()
 		while ( result >= 0 && d_isalive.load() )
 		{
 			result = mqrecv_spmsg(spmsg, d_mqid, d_maxsize, nullptr);
+			isans = static_cast<bool>(spirit_msg_is_ans(&spmsg));
 			if (result >= 0) {
 				// Check if it is req or ans
 				// Invoke handler
 				result = d_msg_handler(spmsg);
 				// If need answer, send it
+				if (!isans) {
+					if (result >= 0) {
+						result = answer(spmsg);
+					}
+				}
 			}
 		}
 

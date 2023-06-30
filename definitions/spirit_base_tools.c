@@ -137,6 +137,10 @@ unsigned char spirit_msg_is_ask(SpiritMsg* smsg)
 {
 	return smsg->format & SPIRIT_FMT_ASK_MASK;
 }
+unsigned char spirit_msg_is_ans(SpiritMsg* smsg)
+{
+	return smsg->format & SPIRIT_FMT_DIR_MASK;
+}
 
 SpiritMsg spirit_msg_make_req_state(unsigned char sender, unsigned char receiver)
 {

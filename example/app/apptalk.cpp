@@ -6,10 +6,10 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 
-#include "ipcmqlib.h"
+#include "daemon_origin.h"
 #include "iostream"
 
-class Hep
+class Hep : public SpiritBase
 {
 
 public:
@@ -22,10 +22,15 @@ public:
 	}
 };
 
+std::unique_ptr<SpiritBase> spirit_obj;
+
 int main()
 {
-	Hep hep;
-	MqReceiver mq_recv(hep.d_name, &Hep::handler, &hep);
-
-	return 0;
+	spirit_obj = std::make_unique<Hep>();
+	DaemonOrigin daemon_origin(spirit_obj);
+	if (daemon_origin.setup() != 0) {
+		printf("DaemonOrigin setup failed!\n");
+		return -1;
+	}
+	return daemon_origin.run(argc, argv);
 }
