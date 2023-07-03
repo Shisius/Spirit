@@ -1,17 +1,19 @@
 
 SPIRIT_DIR=../..
 
-CCPP=g++
-CPPFLAGS=-Wall
-CPPFLAGS+=-I$(SPIRIT_DIR)/definitions -I$(SPIRIT_DIR)/tools/app
-LIBS=-pthread -lrt
+CC=gcc
+CCFLAGS=-Wall
+CXX=g++
+CXXFLAGS=-Wall
+CXXFLAGS+=-I$(SPIRIT_DIR)/definitions -I$(SPIRIT_DIR)/tools/app
+CXXLIBS=-pthread -lrt
 BUILD_DIR=build
 
 SRC=apptalk.cpp $(SPIRIT_DIR)/tools/app/ipcmqlib.cpp
 APP=apptalk
 
 all: 
-	$(CCPP) $(SRC) $(CPPFLAGS) $(LIBS) -o $(APP)
+	$(CXX) $(SRC) $(CXXFLAGS) $(LIBS) -o $(APP)
 
 .PHONY:clean
 clean:

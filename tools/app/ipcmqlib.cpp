@@ -35,7 +35,7 @@ namespace spirit
 		}
 		// Free msg data
 		if (msg.data != nullptr)
-			delete msg.data;
+			free(msg.data);
 		return 0;
 	}
 
@@ -68,7 +68,7 @@ namespace spirit
 		if (msg.size < 0) return MQSIZE_ERROR;
 		if (static_cast<size_t>(result) < (sizeof(SpiritMsg) + msg.size - sizeof(msg.data))) return MQSIZE_ERROR;
 		if (msg.size > 0) {
-			msg.data = ::operator new(msg.size);
+			msg.data = malloc(msg.size);
 			if (msg.data == nullptr) return MQDATA_ERROR;
 			memcpy(msg.data, buf + sizeof(SpiritMsg) - sizeof(msg.data), msg.size);
 		} 

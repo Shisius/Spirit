@@ -34,9 +34,12 @@ ans handler - what is it return?
 send msg by cmd line
 set state bit in atomic
 universal tools for spirit msg consruction from title, object
-handle event req
+handle event req: state.wait() in event thread. notify_all in set_state()
 mqdata -> new -> smsg -> handler -> stack -> delete.
 answer_data T -> 	-> new -> mqdata -> send -> delete
+What about data ptr? Use T& better
+use malloc vs new, use c
+state as int (SpiritState)int, SpiritState | int?
 
 MqReceiver - stop/start. Shaman can recv ans by itself or turn on receiver.
 If WAIT - event handler can be set, default handler can be set, trash can be redir to handler by flag.

@@ -55,6 +55,11 @@ typedef enum
     SPIRIT_TIMEOUT_BASE_RESPONSE = 1
 } SpiritTimeoutBase;
 
+typedef struct _spirit_state_event_t
+{
+    spirit_time_t time;
+} SpiritStateEvent;
+
 #if defined __cplusplus
 }
 #endif 

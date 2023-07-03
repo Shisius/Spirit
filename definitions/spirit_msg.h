@@ -73,9 +73,9 @@ typedef enum
  */
 typedef enum
 {
-	SPIRIT_TITLE_STATE = 0,
-	SPIRIT_TITLE_SHUTDOWN = 1,
-	SPIRIT_TITLE_EVENT = 2,			// Event for state bit. Argument is state bit position?
+	SPIRIT_TITLE_STATE = 0,				// Param: If req - nothing, if ans - SpiritState
+	SPIRIT_TITLE_SHUTDOWN = 1,			// Param: no
+	SPIRIT_TITLE_EVENT = 2,				// Event for state bit. Param: If req - unsigned char (bit position), if ans - SpiritStateEvent
 	SPIRIT_TITLE_CUSTOM_FIRST = 16
 } SPIRIT_COMMON_TITLES;
 

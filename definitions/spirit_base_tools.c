@@ -3,12 +3,12 @@
 /// State
 unsigned char spirit_state_set(unsigned char state, unsigned char bit, unsigned char value)
 {
-	if (value) return state | (1 << bit);
+	if (value) return state | (1 << (bit % 8));
 	return state & ~(1<<bit);
 }
 unsigned char spirit_state_get(unsigned char state, unsigned char bit)
 {
-	return (state >> bit) & 0x1;
+	return (state >> (bit % 8)) & 0x1;
 }
 unsigned char spirit_state_alive(unsigned char state)
 {

@@ -11,10 +11,12 @@ class SpiritBase
 protected:
 
 	std::atomic<SpiritState> d_state;
+	SpiritNote d_note;
 
 	std::unique_ptr<MqReceiver> d_receiver;
 
 	SpiritMsg d_cur_ans;
+	SpiritMsg d_cur_req;
 
 	template<class T>
 	void answer_custom(unsigned char title, T & data);
@@ -29,6 +31,12 @@ protected:
 	void answer_done(unsigned char title);
 
 	/**
+	 * Get data from last request. Use mutex if T& is your internal storage with multiple access.
+	 */
+	template<class T>
+	int get_req_data(T & data);
+
+	/**
 	 * MqReceiver handler. Use answer_* to make answer on custom title.
 	 * Should use mutex to protect your data.
 	 */
@@ -38,6 +46,7 @@ protected:
 		bool isans = static_cast<bool>(spirit_msg_is_ans(&msg));
 		unsigned char sender = msg.sender;
 		int result = 0;
+		d_cur_req = msg;
 		if (isans && (msg.receiver == get_role()))
 		{
 			switch (msg.title)
@@ -47,7 +56,7 @@ protected:
 					answer_custom(msg.title, ss);
 					break;
 				default:
-					result = handler(title, msg.data, msg.size);
+					result = handler(title, msg.size);
 			}
 			if (result < 0) {
 				answer_denied(msg.title);
@@ -67,7 +76,10 @@ protected:
 	virtual int setup();
 	virtual void destroy();
 	virtual void mainloop();
-	virtual int handler(unsigned char title, void * data, unsigned int size);
+	/**
+	 * Your part of logic. You can get data here if size > 0;
+	 */
+	virtual int handler(unsigned char title, unsigned int size);
 
 public:
 
@@ -84,8 +96,9 @@ public:
 
 	int setup_sp(const SpiritNote & sp_note)
 	{
-		std::string sp_name(sp_note.name);
-		d_receiver = std::make_unique<MqReceiver>(std::string(sp_name), &SpiritBase::answer, this);
+		d_note = sp_note;
+		std::string sp_name(d_note.name);
+		d_receiver = std::make_unique<MqReceiver>(std::string(d_name), &SpiritBase::answer, this);
 
 		int result = setup();
 

@@ -35,8 +35,13 @@ public:
 	int check(const std::string & args);
 	void help();
 
-	int send(SpiritMsg* smsg);
 	int force_stop();
+
+	template<class TR, TA>
+	TA selfsend(unsigned char title, TR & data)
+	{
+		
+	}
 
 };
 
